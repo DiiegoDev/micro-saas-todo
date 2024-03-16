@@ -10,12 +10,28 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { toast } from "@/components/ui/use-toast";
 
 export function AuthForm() {
   const form = useForm();
 
-  const handleSubmit = form.handleSubmit((data) => console.log(data));
+  const handleSubmit = form.handleSubmit(async (data) => {
+    try {
+      await signIn("email", { email: data.email, redirect: false });
+      toast({
+        title: "Magic link sent",
+        description: "Check your email for the magic link to login",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error occurred. Please try again",
+      });
+    }
+  });
 
   return (
     <div className="min-h-screen flex justify-center items-center">
