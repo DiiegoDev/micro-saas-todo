@@ -10,7 +10,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { toast } from "@/components/ui/use-toast";
@@ -20,7 +19,7 @@ export function AuthForm() {
 
   const handleSubmit = form.handleSubmit(async (data) => {
     try {
-      await signIn("email", { email: data.email, redirect: false });
+      await signIn("nodemailer", { email: data.email, redirect: false });
       toast({
         title: "Magic link sent",
         description: "Check your email for the magic link to login",
@@ -56,7 +55,9 @@ export function AuthForm() {
                 {...form.register("email")}
               />
             </div>
-            <Button className="w-full">Send Magic Link</Button>
+            <Button className="w-full" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? "sending.." : "Send Magic Link"}
+            </Button>
           </form>
         </CardContent>
       </Card>
