@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -22,14 +18,13 @@ import { Button } from "@/components/ui/button";
 
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+
 import {
   Table,
   TableBody,
@@ -40,6 +35,7 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Todo } from "../interfaces";
 
 const data: Todo[] = [
   {
@@ -47,19 +43,27 @@ const data: Todo[] = [
     title: "Complete todo-micro-saas project",
     createdAt: new Date("2024-03-01"),
     updatedAt: new Date("2024-03-03"),
-    finishedAt: new Date("2024-03-05"),
+    doneAt: new Date("2024-03-05"),
+  },
+
+  {
+    id: "kjdshdshjkjdh",
+    title: "Learn Next.js server side rendering",
+    createdAt: new Date("2024-03-01"),
+  },
+
+  {
+    id: "kjdshdshjvbbcnc",
+    title: "Add a new task feature in todo-micro-saas",
+    createdAt: new Date("2024-03-01"),
+    updatedAt: new Date("2024-03-03"),
+    doneAt: new Date("2024-03-05"),
   },
 ];
 
-export type Todo = {
-  id: string;
-  title: string;
-  createdAt: Date;
-  updatedAt: Date;
-  finishedAt: Date;
-};
-
 type Status = "done" | "waiting";
+
+type Variant = "secondary" | "outline";
 
 export const columns: ColumnDef<Todo>[] = [
   {
@@ -67,10 +71,11 @@ export const columns: ColumnDef<Todo>[] = [
     header: "status",
 
     cell: ({ row }) => {
-      const { finishedAt } = row.original;
-      const status: Status = finishedAt ? "done" : "waiting";
+      const { doneAt } = row.original;
+      const status: Status = doneAt ? "done" : "waiting";
+      const variant: Variant = doneAt ? "outline" : "secondary";
 
-      return <Badge>{status}</Badge>;
+      return <Badge variant={variant}>{status}</Badge>;
     },
   },
 
@@ -160,42 +165,6 @@ export function TodoDateTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
